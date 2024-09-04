@@ -1,3 +1,6 @@
+using JobBoard.Data;
+using Microsoft.EntityFrameworkCore;
+
 namespace JobBoard
 {
     public class Program
@@ -5,6 +8,8 @@ namespace JobBoard
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+
+            builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
 
             // Add services to the container.
             builder.Services.AddControllersWithViews();
@@ -17,6 +22,7 @@ namespace JobBoard
                 app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
+
             }
 
             app.UseHttpsRedirection();
