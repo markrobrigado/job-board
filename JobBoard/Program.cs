@@ -1,3 +1,4 @@
+using JobBoard.Constants;
 using JobBoard.Data;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -29,6 +30,18 @@ namespace JobBoard
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
 
+            }
+
+            // Create service scope for seeding roles.
+            using (var scope = app.Services.CreateScope())
+            {
+                var services = scope.ServiceProvider;
+                var roleManager = services.GetRequiredService<RoleManager<IdentityRole>>();
+
+                if (!roleManager.RoleExistsAsync(Roles.Admin).Result)
+                {
+                    var result = roleManager.CreateAsync(new IdentityRole(Roles.Admin)).Result;
+                }
             }
 
             app.UseHttpsRedirection();
