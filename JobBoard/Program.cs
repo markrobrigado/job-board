@@ -31,11 +31,12 @@ namespace JobBoard
 
             }
 
-            // Create service scope for seeding roles.
+            // Create service scope for seeding roles and users.
             using (var scope = app.Services.CreateScope())
             {
                 var services = scope.ServiceProvider;
                 RoleSeeder.SeedRolesAsync(services).Wait();
+                UserSeeder.SeedUsersAsync(services).Wait();
             }
 
             app.UseHttpsRedirection();
