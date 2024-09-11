@@ -45,6 +45,37 @@ namespace JobBoard.Tests
         }
 
         [Fact]
+        public async Task DeleteAsync_ShouldDeleteJobPosting()
+        {
+            // Create Db context instance
+            var context = CreateDbContext();
+            var repository = new JobPostingRepository(context);
+
+            // Create a new JobPosting instance with test data
+            var jobPosting = new JobPosting
+            {
+                Name = "Test",
+                Description = "Test Description",
+                CreatedDate = DateTime.UtcNow,
+                Company = "Test Company",
+                Location = "Test Location",
+                UserId = "Test User ID"
+            };
+
+            // Add the job posting to the in-memory database asynchronously
+            await context.JobPostings.AddAsync(jobPosting);
+            await context.SaveChangesAsync();
+
+            // Remove the job posting
+            await repository.DeleteAsync(jobPosting.Id);
+
+            // Verify that the job posting was deleted successfully
+            var result = context.JobPostings.Find(jobPosting.Id);
+
+            Assert.Null(result);
+        }
+
+        [Fact]
         public async Task GetAllAsync_ShouldReturnAllJobPostings()
         {
             // Create Db context instance
