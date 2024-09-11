@@ -45,6 +45,44 @@ namespace JobBoard.Tests
         }
 
         [Fact]
+        public async Task GetAllAsync_ShouldReturnAllJobPostings()
+        {
+            // Create Db context instance
+            var context = CreateDbContext();
+            var repository = new JobPostingRepository(context);
+
+            // Create two JobPosting instance with test data
+            var jobPosting1 = new JobPosting
+            {
+                Name = "Test 1",
+                Description = "Test Description 1",
+                CreatedDate = DateTime.UtcNow,
+                Company = "Test Company 1",
+                Location = "Test Location 1",
+                UserId = "Test User ID 1"
+            };
+
+            var jobPosting2 = new JobPosting
+            {
+                Name = "Test 2",
+                Description = "Test Description 2",
+                CreatedDate = DateTime.UtcNow,
+                Company = "Test Company 2",
+                Location = "Test Location 2",
+                UserId = "Test User ID 2"
+            };
+
+            // Add the job postings to the in-memory database asynchronously
+            await context.JobPostings.AddRangeAsync(jobPosting1, jobPosting2);
+            await context.SaveChangesAsync();
+
+            // Verify that the result is not null and that the count of job postings returned is equal to 2
+            var result = await repository.GetAllAsync();
+            Assert.NotNull(result);
+            Assert.Equal(2, result.Count());
+        }
+
+        [Fact]
         public async Task GetByIdAsync_ShouldReturnJobPosting()
         {
             // Create Db context instance
