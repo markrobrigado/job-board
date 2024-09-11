@@ -121,5 +121,38 @@ namespace JobBoard.Tests
             // Verify that calling GetByIdAsync with a non - existent ID throws a KeyNotFoundException
             await Assert.ThrowsAsync<KeyNotFoundException>(() => repository.GetByIdAsync(999));
         }
+
+        [Fact]
+        public async Task UpdateAsync_ShouldUpdateJobPosting()
+        {
+            // Create Db context instance
+            var context = CreateDbContext();
+            var repository = new JobPostingRepository(context);
+
+            // Create a new JobPosting instance with test data
+            var jobPosting = new JobPosting
+            {
+                Name = "Test",
+                Description = "Test Description",
+                CreatedDate = DateTime.UtcNow,
+                Company = "Test Company",
+                Location = "Test Location",
+                UserId = "Test User ID"
+            };
+
+            // Add the job postings to the in-memory database asynchronously
+            await context.JobPostings.AddAsync(jobPosting);
+            await context.SaveChangesAsync();
+
+            // Update description for testing
+            jobPosting.Description = "Update Description";
+            await repository.UpdateAsync(jobPosting);
+
+            // Verify that the job posting was updated successfully
+            var result = context.JobPostings.Find(jobPosting.Id);
+
+            Assert.NotNull(result);
+            Assert.Equal(jobPosting.Description, result.Description);
+        }
     }
 }
