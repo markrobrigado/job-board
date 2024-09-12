@@ -1,5 +1,6 @@
 ﻿using JobBoard.Models;
 using JobBoard.Repositories;
+using JobBoard.ViewModels;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -16,9 +17,35 @@ namespace JobBoard.Controllers
             _userManager = userManager;
         }
 
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
+        {
+            var jobPostings = await _repository.GetAllAsync();
+            return View();
+        }
+
+        public IActionResult Create()
         {
             return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Create(JobPostingViewModel jobPostingVm)
+        {
+            if (ModelState.IsValid)
+            {
+                var jobPosting = new JobPosting
+                {
+                    Name = jobPostingVm.Name,
+                    Description = jobPostingVm.Description,
+                    Company = jobPostingVm.Company,
+                    Location = jobPostingVm.Location,
+                    UserId = _userManager.GetUserId(User)
+                };
+
+                await _repository.AddAsync(jobPosting);
+            }
+
+            return RedirectToAction(nameof(Index));
         }
     }
 }
