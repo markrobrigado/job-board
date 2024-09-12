@@ -1,7 +1,27 @@
-﻿@*
-    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
-*@
+﻿@model JobBoard.Models.JobPosting
+
 @{
+    ViewData["Title"] = "Create Job Posting";
 }
 
-<h1>Create</h1>
+<h1>Create Job Posting</h1>
+
+<form method="post" action="Create">
+    <div class="mb-3">
+        <label asp-for="Name" class="form-label">Job Title</label>
+        <input type="text" asp-for="Name" class="form-control" placeholder="Enter Job Title"/>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Description" class="form-label">Job Description</label>
+        <textarea type="text" asp-for="Description" class="form-control" placeholder="Enter Job Description"></textarea>
+    </div>
+    <div class="mb-3">
+        <label asp-for="Company" class="form-label">Company</label>
+        <input type="text" asp-for="Company" class="form-control" placeholder="Enter Company" />
+     </div>
+    <div class="mb-3">
+        <label asp-for="Location" class="form-label">Location</label>
+        <input type="text" asp-for="Location" class="form-control" placeholder="Enter Job Location" />
+    </div>
+    <button type="submit" class="btn btn-primary">Create</button>
+</form>
