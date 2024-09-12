@@ -20,7 +20,7 @@ namespace JobBoard.Controllers
         public async Task<IActionResult> Index()
         {
             var jobPostings = await _repository.GetAllAsync();
-            return View();
+            return View(jobPostings);
         }
 
         public IActionResult Create()
