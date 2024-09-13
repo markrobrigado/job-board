@@ -53,5 +53,24 @@ namespace JobBoard.Controllers
             }
             return View(jobPostingVm);
         }
+
+        [HttpDelete]
+        [Authorize(Roles = $"{Roles.Admin},{Roles.Employer}")]
+        public async Task<IActionResult> Delete(int id)
+        {
+            var jobPosting = await _repository.GetByIdAsync(id);
+            if (jobPosting == null)
+            {
+                return NotFound();
+            }
+
+            var userId = _userManager.GetUserId(User);
+            if (!User.IsInRole(Roles.Admin) && jobPosting.UserId != userId)
+            {
+                return Forbid();
+            }
+            await _repository.DeleteAsync(id);
+            return Ok();
+        }
     }
 }
