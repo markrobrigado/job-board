@@ -24,6 +24,14 @@ namespace JobBoard.Controllers
         public async Task<IActionResult> Index()
         {
             var jobPostings = await _repository.GetAllAsync();
+
+            if (User.IsInRole(Roles.Employer))
+            {
+                var userId = _userManager.GetUserId(User);
+                var filteredJobPostings = jobPostings.Where(posting => posting.UserId == userId);
+                return View(filteredJobPostings);
+            }
+
             return View(jobPostings);
         }
 
